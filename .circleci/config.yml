@@ -8,14 +8,21 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+        keys:
+          - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          - v1-deps-{{ .Branch }}
+          - v1-deps
+
+      - run:
+        name: Install Dependencies
+        command: npm ci
+
+      - save-cache:
+        key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+        # cache NPM modules and the folder with the Cypress binary
+        paths:
+          - ~/.npm
+          - ~/.cache
 
   lint:
     docker:
@@ -25,14 +32,24 @@ jobs:
       - checkout
       - restore_cache:
         keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm run lint
+          - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          - v1-deps-{{ .Branch }}
+          - v1-deps
+
+      - run:
+        name: Install Dependencies
+        command: npm ci
+
+      - save-cache:
+        key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+        # cache NPM modules and the folder with the Cypress binary
+        paths:
+          - ~/.npm
+          - ~/.cache
+
+      - run:
+        name: lint
+        command: npm run lint
 
   build:
     docker:
@@ -42,14 +59,22 @@ jobs:
       - checkout
       - restore_cache:
         keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-        - run: npm run build
+          - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          - v1-deps-{{ .Branch }}
+          - v1-deps
+
+      - run:
+        name: Install Dependencies
+        command: npm ci
+
+      - save-cache:
+        key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+        # cache NPM modules and the folder with the Cypress binary
+        paths:
+          - ~/.npm
+          - ~/.cache
+
+      - run: npm run build
 
 workflows:
   version: 2
