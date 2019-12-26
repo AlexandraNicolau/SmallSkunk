@@ -1,0 +1,48 @@
+{
+  "name": "smallskunk",
+  "version": "0.0.1",
+  "description": "spotify command line tool",
+  "main": "index.js",
+  "contributors": [
+    {
+      "name": "Alexandra Nicolau",
+      "email": "alexandra.tnicolau@gmail.com"
+    },
+    {
+      "name": "Samuel Barker",
+      "email": "dev@sam-barker.co.uk",
+      "url": "https://sam-barker.co.uk"
+    }
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "lint": "eslint src/**/**"
+  }, 
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run build",
+      "pre-push": "npm run lint && npm run build"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexandraNicolau/SmallSkunk.git"
+  },
+  "author": "",
+  "license": "MIT ",
+  "bugs": {
+    "url": "https://github.com/AlexandraNicolau/SmallSkunk/issues"
+  },
+  "homepage": "https://github.com/AlexandraNicolau/SmallSkunk#readme",
+  "devDependencies": {
+    "@types/node": "^13.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript": "^6.3.1",
+    "eslint-plugin-import": "^2.19.1",
+    "husky": "^3.1.0",
+    "typescript": "^3.7.4"
+  }
+}
