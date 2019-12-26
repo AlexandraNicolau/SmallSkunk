@@ -8,21 +8,21 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-          - v1-deps-{{ .Branch }}
-          - v1-deps
+          keys:
+            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+            - v1-deps-{{ .Branch }}
+            - v1-deps
 
       - run:
-        name: Install Dependencies
-        command: npm ci
+          name: Install Dependencies
+          command: npm ci
 
       - save-cache:
-        key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-        # cache NPM modules and the folder with the Cypress binary
-        paths:
-          - ~/.npm
-          - ~/.cache
+          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          # cache NPM modules and the folder with the Cypress binary
+          paths:
+            - ~/.npm
+            - ~/.cache
 
   # lint:
   #   docker:
