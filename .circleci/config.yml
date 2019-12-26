@@ -1,0 +1,89 @@
+version: 2
+
+jobs:
+  install:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/code
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+            - v1-deps-{{ .Branch }}
+            - v1-deps
+
+      - run:
+          name: Install Dependencies
+          command: npm ci
+
+      - save-cache:
+          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - ~/.npm
+            - ~/.cache
+
+  lint:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/code
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+            - v1-deps-{{ .Branch }}
+            - v1-deps
+
+      - run:
+          name: Install Dependencies
+          command: npm ci
+
+      - save-cache:
+          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - ~/.npm
+            - ~/.cache
+
+      - run:
+          name: lint
+          command: npm run lint
+
+  build:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/code
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+            - v1-deps-{{ .Branch }}
+            - v1-deps
+
+      - run:
+          name: Install Dependencies
+          command: npm ci
+
+      - save-cache:
+          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - ~/.npm
+            - ~/.cache
+
+      - run:
+          name: build
+          command: npm run build
+
+workflows:
+  version: 2
+
+  deploy:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - build:
+          requires:
+            - lint
