@@ -8,7 +8,7 @@ const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
 const generateRandomString = (length: number) => {
   let text = '';
 
-  for (let i = 0; i < length; i + 1) {
+  for (let i = 0; i < length; i += 1) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
