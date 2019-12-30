@@ -8,6 +8,7 @@ const {
   SPOTIFY_CLIENT_SECRET,
   SPOTIFY_REDIRECT_URI,
 } = process.env;
+
 const route = (req: Request, res: Response) => {
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -38,8 +39,6 @@ const route = (req: Request, res: Response) => {
 
     request.post(authOptions, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        /* eslint-disable camelcase */
-
         const { access_token: accessToken, refresh_token: refreshToken } = body;
         // const options = {
         //   url: SPOTIFY_REFRESH_TOKEN,
