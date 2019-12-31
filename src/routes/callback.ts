@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import querystring from 'querystring';
 import request from 'request';
-import { STATE_KEY, SPOTIFY_API_TOKEN } from '../constants';
+import { STATE_KEY, SPOTIFY_API_TOKEN, HTTP_SUCCESS_CODE } from '../constants';
 
 const {
   SPOTIFY_CLIENT_ID,
@@ -38,7 +38,7 @@ const route = (req: Request, res: Response) => {
     };
 
     request.post(authOptions, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
+      if (!error && response.statusCode === HTTP_SUCCESS_CODE) {
         const { access_token: accessToken, refresh_token: refreshToken } = body;
         // const options = {
         //   url: SPOTIFY_REFRESH_TOKEN,
