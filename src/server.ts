@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
 import loginRoute from './routes/login';
 import callbackRoute from './routes/callback';
+import refreshTokenRoute from './routes/refresh-token';
 
 const {
   SPOTIFY_TOKEN,
@@ -18,36 +20,16 @@ if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET || !SPOTIFY_REDIRECT_URI || !SP
 }
 const app = express();
 
-app.use(express.static(__dirname + '../public'))
-   .use(cors())
-   .use(cookieParser());
+const staticPath = path.join(__dirname, '../public/');
 
+app.use(express.static(staticPath))
+  .use(cors())
+  .use(cookieParser());
+
+app.get('/', (req, res) => res.redirect('/index.html'));
 app.get('/login', loginRoute);
-app.post('/callback', callbackRoute);
+app.get('/callback', callbackRoute);
+app.get('/refresh_token', refreshTokenRoute);
 
 console.log('Listening on 8888');
 app.listen(8888); 
-
-// app.get('/refresh_token', function(req, res) {
-
-//   // requesting access token from refresh token
-//   var refresh_token = req.query.refresh_token;
-//   var authOptions = {
-//     url: 'https://accounts.spotify.com/api/token',
-//     headers: { 'Authorization': 'Basic ' + (new Buffer(SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET).toString('base64')) },
-//     form: {
-//       grant_type: 'refresh_token',
-//       refresh_token: refresh_token
-//     },
-//     json: true
-//   };
-
-//   request.post(authOptions, function(error, response, body) {
-//     if (!error && response.statusCode === 200) {
-//       var access_token = body.access_token;
-//       res.send({
-//         'access_token': access_token
-//       });
-//     }
-//   });
-// });

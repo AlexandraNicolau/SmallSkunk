@@ -10,6 +10,7 @@ const {
 } = process.env;
 
 const route = (req: Request, res: Response) => {
+  console.info('Login route hit');
   const state = generateRandomString(16);
   const authParams = querystring.stringify({
     response_type: 'code',

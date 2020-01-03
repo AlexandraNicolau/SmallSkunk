@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import querystring from 'querystring';
 import request from 'request';
-import { STATE_KEY, SPOTIFY_API_TOKEN, HTTP_SUCCESS_CODE } from '../constants';
+import { STATE_KEY, SPOTIFY_API_TOKEN_URL, HTTP_SUCCESS_CODE } from '../constants';
 
 const {
   SPOTIFY_CLIENT_ID,
@@ -10,8 +10,7 @@ const {
 } = process.env;
 
 const route = (req: Request, res: Response) => {
-  // your application requests refresh and access tokens
-  // after checking the state parameter
+  console.info('Callback route hit');
 
   const code = req.query.code || null;
   const state = req.query.state || null;
@@ -19,13 +18,14 @@ const route = (req: Request, res: Response) => {
 
   if (state === null || state !== storedState) {
     const mismatch = querystring.stringify({ error: 'state_mismatch' });
+    console.info('Redirecting to /#mismatch');
     res.redirect(`/#${mismatch}`);
   } else {
     res.clearCookie(STATE_KEY);
     const authStr = `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`;
     const authBuffer = Buffer.from(authStr).toString('base64');
     const authOptions = {
-      url: SPOTIFY_API_TOKEN,
+      url: SPOTIFY_API_TOKEN_URL,
       form: {
         code,
         redirect_uri: SPOTIFY_REDIRECT_URI,
@@ -39,23 +39,17 @@ const route = (req: Request, res: Response) => {
 
     request.post(authOptions, (error, response, body) => {
       if (!error && response.statusCode === HTTP_SUCCESS_CODE) {
-        const { access_token: accessToken, refresh_token: refreshToken } = body;
-        // const options = {
-        //   url: SPOTIFY_REFRESH_TOKEN,
-        //   headers: { Authorization: `Bearer ${access_token}` },
-        //   json: true,
-        // };
-
-        // use the access token to access the Spotify Web API
-        // request.get(options, (err, res, refreshTokenBody) => {});
-        // we can also pass the token to the browser to make requests from there
+        /* eslint-disable @typescript-eslint/camelcase */
+        const { access_token, refresh_token } = body;
         const token = querystring.stringify({
-          accessToken,
-          refreshToken,
+          access_token,
+          refresh_token,
         });
+        console.info('Redirecting to /#token');
         res.redirect(`/#${token}`);
       } else {
         const invalidToken = querystring.stringify({ error: 'invalid_token' });
+        console.info('Redirecting to /#invalid_token');
         res.redirect(`/#${invalidToken}`);
       }
     });
