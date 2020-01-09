@@ -10,15 +10,12 @@ const {
 } = process.env;
 
 const route = (req: Request, res: Response) => {
-  console.info('Callback route hit');
-
   const code = req.query.code || null;
   const state = req.query.state || null;
   const storedState = req.cookies ? req.cookies[STATE_KEY] : null;
 
   if (state === null || state !== storedState) {
     const mismatch = querystring.stringify({ error: 'state_mismatch' });
-    console.info('Redirecting to /#mismatch');
     res.redirect(`/#${mismatch}`);
   } else {
     res.clearCookie(STATE_KEY);
@@ -49,7 +46,6 @@ const route = (req: Request, res: Response) => {
         res.redirect(`/#${token}`);
       } else {
         const invalidToken = querystring.stringify({ error: 'invalid_token' });
-        console.info('Redirecting to /#invalid_token');
         res.redirect(`/#${invalidToken}`);
       }
     });
