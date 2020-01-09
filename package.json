@@ -15,10 +15,12 @@
     }
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf build/ && tsc",
+    "server": "npm run build && source .env && node build/server.js",
     "dev": "source .env && npm run start",
     "start": "npm run build && node build/index.js",
-    "lint": "eslint src/**/**"
+    "lint": "eslint src/**/**",
+    "lint:fix": "eslint src/**/** --fix"
   },
   "husky": {
     "hooks": {
